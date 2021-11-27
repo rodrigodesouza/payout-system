@@ -43,13 +43,6 @@ RUN useradd -u ${USER_ID} -g www-data --shell /bin/bash --create-home wepayout
 # Seta diretório de trabalho
 WORKDIR /var/www/html
 
-# Copia o diretório da aplicação para o container
-# COPY ./src /var/www/html
-
-# Altera permissões do diretório do app
-#RUN chown -R wepayout:www-data /var/www/html
-
-# solucao - está dando as permissões na maquina e depois copiando para o container
 COPY --chown=wepayout:www-data ./src /var/www/html
 
 # Altera o usuário para "wepayout"
