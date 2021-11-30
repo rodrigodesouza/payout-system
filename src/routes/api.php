@@ -1,5 +1,11 @@
 <?php
 
+
+use App\Http\Controllers\Api\{
+    AuthenticateController,
+    RegisterController,
+    UserController
+};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +20,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::post('/register', [RegisterController::class, 'register'])->name('api.users.store');
+Route::post('users/login', [AuthenticateController::class, 'login'])->name('api.users.login');
+
+Route::middleware('auth:sanctum')->name('api.')->group(function () {
+    Route::apiResource('users', UserController::class)->only(['show', 'update', 'destroy']);
+
 });
