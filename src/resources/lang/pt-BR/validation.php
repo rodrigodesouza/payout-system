@@ -26,6 +26,9 @@ return [
         [
             'rule-name' => 'custom-message',
         ],
+        'invoice' => [
+            'unique_invoice' => 'Este :attribute já está cadastrado em outra ordem de pagamento.'
+        ]
     ],
     'date' => 'O campo :attribute não contém uma data válida.',
     'date_equals' => 'O campo :attribute deve ser uma data igual a :date.',
@@ -150,5 +153,12 @@ return [
         'title' => 'título',
         'username' => 'usuário',
         'year' => 'ano',
+        //custom
+        "invoice" => 'Invoice',
+        "beneficiary_name" => 'Nome do beneficiário',
+        "code_bank" => 'Código do banco do beneficiário',
+        "number_agency" => 'Número da agência do beneficiário',
+        "number_account" => 'Número da conta do beneficiário',
+        "value" => 'Valor do pagamento',
     ],
 ];

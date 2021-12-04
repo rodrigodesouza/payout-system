@@ -3,6 +3,7 @@
 
 use App\Http\Controllers\Api\{
     AuthenticateController,
+    PaymentOrderController,
     RegisterController,
     UserController
 };
@@ -30,4 +31,5 @@ Route::post('users/login', [AuthenticateController::class, 'login'])->name('api.
 Route::middleware('auth:sanctum')->name('api.')->group(function () {
     Route::apiResource('users', UserController::class)->only(['show', 'update', 'destroy']);
 
+    Route::post('payments', [PaymentOrderController::class, 'store'])->name('payment_order.store');
 });
