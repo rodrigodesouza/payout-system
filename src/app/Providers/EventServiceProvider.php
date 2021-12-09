@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\PaymentOrderCreatedEvent;
+use App\Listeners\PaymentOrderCreatedListen;
+use App\Models\PaymentOrder;
+use App\Observers\PaymentOrderObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -15,6 +19,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        PaymentOrderCreatedEvent::class => [
+            PaymentOrderCreatedListen::class
+        ],
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
@@ -27,6 +34,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        PaymentOrder::observe(PaymentOrderObserver::class);
     }
 }

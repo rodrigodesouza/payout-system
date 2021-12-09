@@ -31,5 +31,7 @@ Route::post('users/login', [AuthenticateController::class, 'login'])->name('api.
 Route::middleware('auth:sanctum')->name('api.')->group(function () {
     Route::apiResource('users', UserController::class)->only(['show', 'update', 'destroy']);
 
+    Route::get('payments', [PaymentOrderController::class, 'index'])->name('payment_order.index');
     Route::post('payments', [PaymentOrderController::class, 'store'])->name('payment_order.store');
+    Route::get('payments/{id}', [PaymentOrderController::class, 'show'])->name('payment_order.show');
 });

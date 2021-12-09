@@ -20,4 +20,9 @@ class PaymentOrder extends Model
         'status',
         'processor_bank_id'
     ];
+
+    public function scopeByUser($query)
+    {
+        return $query->where('user_id', auth()->id());
+    }
 }

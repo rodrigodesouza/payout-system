@@ -5,6 +5,12 @@ namespace App\Rules;
 use App\Repositories\Contract\PaymentOrderInterface;
 use Illuminate\Contracts\Validation\Rule;
 
+/**
+ * @description Esta validação deve verificar se um invoice 'XYZ' foi usado pelo cliente atual em algum momento. Se já
+ * tiver usado, um alerta deve ser retornado.
+ * É permitido que o invoice 'XYZ' seja usado por outro cliente caso não o
+ * tenha usado anteriormente, mas nunca permitir que o mesmo cliente use o invoice mais de uma vez.
+ */
 class ClientInvoiceUnique implements Rule
 {
     private PaymentOrderInterface $paymentorderInterface;

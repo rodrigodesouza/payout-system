@@ -26,6 +26,14 @@ RUN docker-php-ext-install bcmath
 # Instala composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Instala Supervisor.
+RUN apt-get --allow-releaseinfo-change update && \
+    apt-get install -y supervisor
+
+# Copia arquivos de configuração do Supervisor
+COPY ./docker/app/supervisord.conf /etc/supervisor
+COPY ./docker/app/laravel-worker.conf /etc/supervisor/conf.d
+
 # Instala node
 # RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - &&\
 #     apt-get install -y nodejs
@@ -48,9 +56,13 @@ COPY --chown=wepayout:www-data ./src /var/www/html
 # Altera o usuário para "wepayout"
 USER wepayout
 
+RUN mkdir /home/wepayout/supervisor
+
 # Expõe porta 9000
 VOLUME /var/www/html
 EXPOSE 9000
+
+RUN supervisord -c /etc/supervisor/supervisord.conf
 
 # Script de inicialização do container
 ENTRYPOINT ["/docker/docker-entrypoint.sh"]

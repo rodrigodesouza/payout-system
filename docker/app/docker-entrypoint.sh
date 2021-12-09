@@ -16,6 +16,11 @@ then
   php artisan key:generate
 fi
 
+supervisord
+supervisorctl reread
+supervisorctl update
+supervisorctl start laravel-worker:*
+
 php artisan migrate --force 
 
 php-fpm

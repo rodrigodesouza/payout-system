@@ -37,7 +37,7 @@ class PaymentOrderRequest extends FormRequest
             'number_agency' => 'required|digits_between:' . self::MIN_NUMBER_AGENCY . ',' . self::MAX_NUMBER_AGENCY,
             'number_account' => 'required|digits_between:' . self::MIN_NUMBER_ACCOUNT . ',' . self::MAX_NUMBER_ACCOUNT,
             'beneficiary_name' => 'required|min:2|max:255',
-            'invoice' => 'required|unique_invoice',
+            'invoice' => 'required|unique_invoice', //valida se o invoice já foi usado pelo usuário atual
         ];
     }
 }

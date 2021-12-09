@@ -3,6 +3,8 @@
 namespace Tests\Feature\Api;
 
 use App\Http\Requests\PaymentOrderRequest;
+use App\Jobs\ConsultPaymentOrderJob;
+use App\Jobs\PaymentOrderJob;
 use App\Repositories\Contract\PaymentOrderInterface;
 use App\Services\UserService;
 use Database\Factories\PaymentOrderFactory;
@@ -13,6 +15,7 @@ use Illuminate\Http\Response;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 use Faker\Factory;
+use Illuminate\Support\Facades\Queue;
 
 class CreatePaymentOrderTest extends TestCase
 {
@@ -23,6 +26,10 @@ class CreatePaymentOrderTest extends TestCase
     private PaymentOrderInterface $paymentOrderRepository;
 
     const ROUTE_STORE = 'api.payment_order.store';
+
+    const ROUTE_SHOW = 'api.payment_order.show';
+
+    const ROUTE_INDEX = 'api.payment_order.index';
 
     public function setUp(): void
     {
@@ -168,7 +175,7 @@ class CreatePaymentOrderTest extends TestCase
         $this->userAuthenticate();
 
         $data = [
-            'code_bank' => $this->faker->randomNumber($this->paymentOrderRequest::MAX_CODE_BANK + 1)
+            'code_bank' => $this->faker->randomNumber($this->paymentOrderRequest::MAX_CODE_BANK + 1, true)
         ];
 
         $response = $this->postJson(route(self::ROUTE_STORE), $data);
@@ -323,6 +330,54 @@ class CreatePaymentOrderTest extends TestCase
         ]);
     }
 
-    //testar execução de Job, alteração de status, consulta de status
+    /**
+     * testar execução do Job de processar pagamento
+     * @test
+     */
+    public function execution_of_payment_processing_job()
+    {
+        Queue::fake();
 
+        $this->userAuthenticate();
+
+        $paymentFaker = (new PaymentOrderFactory)->make();
+
+        $data = $paymentFaker->toArray();
+        $response = $this->postJson(route(self::ROUTE_STORE), $data);
+        $response->assertCreated();
+
+        Queue::assertPushed(PaymentOrderJob::class, function ($job) use ($data) {
+            return $job->paymentOrder->invoice == $data['invoice'];
+        });
+
+        // Queue::assertPushedWithChain(PaymentOrderJob::class, [
+        //     ConsultPaymentOrderJob::class
+        // ]);
+    }
+
+    /**
+     * deve ser capaz de fazer a busca por um pagamento
+     * @test
+     */
+    public function must_be_able_to_do_the_search_for_a_payment()
+    {
+        $this->userAuthenticate();
+
+        $paymentFaker = (new PaymentOrderFactory)->make();
+        $data         = $paymentFaker->toArray();
+        $response = $this->postJson(route(self::ROUTE_STORE), $data);
+
+        $content = $response->getData();
+
+        $response = $this->getJson(route(self::ROUTE_SHOW, $content->id));
+
+        $response->assertJson([
+            'invoice' => $data['invoice'],
+            'beneficiary_name' => $data['beneficiary_name'],
+            'code_bank' => $data['code_bank'],
+            'number_agency' => $data['number_agency'],
+            'number_account' => $data['number_account'],
+            'value' => $data['value'],
+        ]);
+    }
 }

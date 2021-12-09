@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Queue\Events\JobProcessing;
 use App\Repositories\Contract\{
     PaymentOrderInterface,
     UserInterface
@@ -11,6 +12,8 @@ use App\Repositories\{
     UserRepository
 };
 use App\Rules\ClientInvoiceUnique;
+use App\Services\PaymentOrderService;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -34,8 +37,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        \Validator::extend('unique_invoice', function($attribute, $value, $parameter, $validator) {
+        \Validator::extend('unique_invoice', function ($attribute, $value, $parameter, $validator) {
             return (new ClientInvoiceUnique)->passes($attribute, $value);
+        });
+
+        Queue::before(function (JobProcessing $event) {
+            if ($event->job->resolveName() == "App\Jobs\PaymentOrderJob") {
+                $payload = json_decode($event->job->getRawBody());
+                $data = unserialize($payload->data->command);
+
+                (new PaymentOrderService)->toProcessing($data->paymentOrder);
+            }
         });
     }
 }
