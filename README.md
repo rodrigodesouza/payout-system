@@ -3,6 +3,7 @@
 1. Baixe o projeto do Github
 2. Na raiz do projeto, verifique no arquivo **.env** os valores **APP_PORT** e **DB_PORT**. Se alguma porta estiver em uso, altere-o.
 3. Execute o comando docker no terminal: `docker-compose up -d --build`
+4. Crie um banco de dados com o nome `wepayout` ou conforme no arquivo `src/.env` que deve ter sido criado pelo docker.
 
 ## Executar os testes
 
