@@ -7,7 +7,8 @@
 
 ## Executar os testes
 
-Para executar os testes, entre com o comando docker no terminal: `docker-compose exec app bash`. Agora rode o comando `php artisan test ` ou `vendor/bin/phpunit`.
+1. Crie um arquivo sqlite em `src/database/database.sqlite`
+2. Para executar os testes, entre com o comando docker no terminal: `docker-compose exec app bash`. Agora rode o comando `php artisan test ` ou `vendor/bin/phpunit`.
 
 ### Observações
 
