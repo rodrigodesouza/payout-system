@@ -23,4 +23,4 @@ As Queue do Laravel já estão prontas para executar. Não precisa fazer nada ma
 
 Siga documentação da Api:
 
-[https://documenter.getpostman.com/view/163974/UVR4MUoi]()
+[https://documenter.getpostman.com/view/163974/UVR4MUoi](https://documenter.getpostman.com/view/163974/UVR4MUoi)
