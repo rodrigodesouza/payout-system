@@ -22,5 +22,6 @@ supervisorctl update
 supervisorctl start laravel-worker:*
 
 php artisan migrate --force 
+php artisan migrate --env=testing --force
 
 php-fpm
